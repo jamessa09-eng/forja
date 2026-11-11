@@ -187,6 +187,18 @@ svg text{fill:var(--muted);font:600 11px var(--body)}
 .kcalN{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:700;margin:2px 0 6px}
 .kcalN b{font-family:var(--display);font-stretch:75%;font-size:1.7rem;color:var(--fg)}
 .kcalN b.pasa{color:var(--warn)}
+.comp{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.comp figure{margin:0;background:var(--raised);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.comp img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.comp figcaption{font-size:.74rem;padding:6px 8px;color:var(--muted)}
+.comp figcaption b{color:var(--fg)}
+.comp .vacia{aspect-ratio:3/4;display:grid;place-items:center;text-align:center;padding:10px;color:var(--muted);font-size:.85rem;border:2px dashed var(--line);background:none}
+.galeria{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.galeria figure{margin:0}
+.galeria img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:10px;display:block}
+.galeria figcaption{font-size:.7rem;color:var(--muted);margin-top:3px}
+.linkBad{background:none;border:0;color:var(--bad);font:700 .75rem var(--body);padding:0;cursor:pointer}
+.seg button{font-size:.85rem;padding:9px 4px}
 .faseRow{padding:10px 12px;border-radius:14px;border:1px solid var(--line);margin-top:8px}
 .faseRow.on{border-color:var(--accent-line);background:var(--accent-soft)}
 .faseRow b{display:block}
@@ -267,7 +279,7 @@ th{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut
   <section id="v-progreso" class="view" hidden>
     <div class="eyebrow">Tu avance</div>
     <h1>Progreso</h1>
-    <div class="seg" role="tablist"><button data-seg="pp" aria-pressed="true">Peso y cintura</button><button data-seg="ph" aria-pressed="false">Hábitos</button></div>
+    <div class="seg" role="tablist"><button data-seg="pp" aria-pressed="true">Peso</button><button data-seg="pf" aria-pressed="false">Fuerza</button><button data-seg="pfo" aria-pressed="false">Fotos</button><button data-seg="ph" aria-pressed="false">Hábitos</button></div>
     <div id="pp">
       <div class="tiles" id="tiles"></div>
       <div class="card" id="revision"></div>
@@ -282,6 +294,8 @@ th{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--mut
       </details>
       <details class="card fold"><summary>Historial</summary><div class="loglist" id="historial"></div></details>
     </div>
+    <div id="pf" hidden></div>
+    <div id="pfo" hidden></div>
     <div id="ph" hidden>
       <div class="card"><h3>Hoy</h3><div id="habitList"></div></div>
       <div class="card"><h3>Últimos 28 días</h3><div class="streak" id="streak"></div><p class="note" style="margin-top:10px">Naranja: cumpliste todo. Tenue: la mitad o más.</p></div>
@@ -562,7 +576,27 @@ const EX={
   maq:'La misma torre de abdomen de la Fase 1: respaldo y apoyos para los antebrazos.',
   ajuste:'Sube por el escalón y apoya los antebrazos.',
   pasos:['Piernas casi rectas y juntas.','Súbelas hasta que queden paralelas al suelo, enrollando un poco la pelvis.','Baja despacio sin balancearte.'],
-  error:'Balancear las piernas para subir.',alt:'Elevación de rodillas (más fácil)'}
+  error:'Balancear las piernas para subir.',alt:'Elevación de rodillas (más fácil)'},
+ tricepsNuca:{n:'Extensión de tríceps sobre la cabeza (polea)',zona:'Tríceps (la parte larga)',ani:'triceps',
+  maq:'Torre de poleas con la cuerda. Te pones de espaldas a la polea.',
+  ajuste:'Polea abajo o a media altura, cuerda puesta. Sujétala detrás de la cabeza y da un paso adelante.',
+  pasos:['Codos arriba, junto a la cabeza.','Estira los brazos hacia delante y arriba.','Vuelve despacio sin mover los codos.'],
+  error:'Abrir los codos hacia los lados.',alt:'Extensión con una mancuerna sobre la cabeza'},
+ lateralesPolea:{n:'Elevación lateral en polea',zona:'Hombro (da anchura)',ani:'laterales',
+  maq:'Torre de poleas con un agarre de una mano y la polea abajo.',
+  ajuste:'Polea en la posición más baja. Ponte de lado y agarra con la mano más lejana.',
+  pasos:['Brazo un poco doblado delante del cuerpo.','Súbelo hacia el lado hasta la altura del hombro.','Baja despacio. Al terminar, cambia de lado.'],
+  error:'Inclinar el cuerpo para ayudarte.',alt:'Elevaciones laterales con mancuernas'},
+ pajaros:{n:'Pájaros con mancuernas',zona:'Hombro de atrás, postura',ani:'laterales',
+  maq:'Dos mancuernas ligeras. También se hace en el peck deck sentado al revés.',
+  ajuste:'Inclínate hacia delante con la espalda recta, o siéntate en el borde de un banco y apóyate sobre las piernas.',
+  pasos:['Brazos colgando, codos un poco doblados.','Abre los brazos hacia los lados juntando las escápulas.','Baja despacio.'],
+  error:'Usar mucho peso y balancearte.',alt:'Face pull en polea'},
+ crunchInverso:{n:'Crunch inverso',zona:'Abdomen inferior',
+  maq:'Sin máquina. Una colchoneta en la zona de abdominales.',
+  ajuste:'Boca arriba, brazos a los lados con las palmas en el suelo.',
+  pasos:['Rodillas dobladas a 90°, piernas en el aire.','Lleva las rodillas hacia el pecho despegando un poco la cadera del suelo.','Baja despacio sin dejar caer las piernas.'],
+  error:'Hacerlo con impulso.',alt:'Elevación de rodillas en la torre'}
 };
 const CARDIO={
  cinta:{n:'Cinta de correr (trotadora)',como:'Pon velocidad 5-6 km/h para caminar rápido. Si pide inclinación, súbela a 8-12%. No te agarres de las barras.'},
@@ -670,6 +704,7 @@ Object.assign(ANI,{
  ruedaAbs:{per:3400,A:{k:[100,150],f:[72,154],p:[104,118],s:[124,94],h:[138,90],e:[128,122],w:[132,148]},B:{p:[118,132],s:[160,130],h:[176,128],e:[178,140],w:[194,148]},
   bg:c=>c.R(40,157,170,5,'soft'),fg:(c,P)=>{c.C([P.w[0],P.w[1]+2],7,'move');c.O([P.w[0],P.w[1]+2],2.5,'soft')}}
 });
+ANI.crunchInverso={A:{h:[52,146],s:[68,150],p:[116,152],k:[136,124],f:[160,130],e:[88,154],w:[106,156]},B:{p:[118,146],k:[112,112],f:[136,104]},bg:c=>c.R(36,157,170,5,'soft')};
 ANI.elevPiernas={A:ANI.rodillas.A,B:{k:[130,100],f:[158,98]},bg:ANI.rodillas.bg};
 ANI.hiit=Object.assign({},ANI.bici,{per:600});
 let COL={};
@@ -808,6 +843,16 @@ const FASES={
  3:{n:'Fase 3 · Avanzada',sem:'Semana 27 en adelante',txt:'5 días por grupos musculares, más volumen para definir y una semana suave cada 6.'}};
 const PLANES={1:PLAN1,2:PLAN2,3:PLAN3};
 let PLAN=PLAN1;
+// Complementarios que rotan cada 4 semanas (los ejercicios grandes no cambian dentro de la fase)
+const ROTA={curlPolea:'martillo',martillo:'curlPolea',curlBarra:'curlPolea',triceps:'tricepsNuca',laterales:'lateralesPolea',peckDeck:'cruce',cruce:'peckDeck',
+ facePull:'pajaros',crunchMaq:'crunchPolea',crunchPolea:'crunchMaq',plancha:'planchaLat',planchaLat:'plancha',rodillas:'crunchInverso',elevPiernas:'crunchInverso',ruedaAbs:'crunchPolea'};
+function semanaFase(){const f=faseActual(),desde=S.faseManual?(S.faseDesde||1):(f===1?1:f===2?13:27);return Math.max(0,semanaN()-desde)}
+const bloque=()=>Math.floor(semanaFase()/4),rotado=()=>bloque()%2===1;
+function rotar(P){
+  if(!rotado())return P;
+  return P.map(d=>{const ids=new Set(d.ex.map(x=>x[0])),ya=new Set();
+    return Object.assign({},d,{ex:d.ex.map(x=>{const alt=ROTA[x[0]];if(alt&&!ids.has(alt)&&!ya.has(alt)){ya.add(alt);return [alt,...x.slice(1)]}return x})})});
+}
 function faseAuto(){const w=semanaN();return w<=12?1:w<=26?2:3}
 function faseActual(){return S.faseManual||faseAuto()}
 function esDescarga(){
@@ -852,7 +897,8 @@ const PESO={pressPecho:['maq',20,5],jalon:['maq',30,5],pressHombro:['maq',15,5],
  gemelos:['lado',10,5],crunchMaq:['maq',20,5],plancha:['corp'],planchaLat:['corp'],rodillas:['corp'],smithInclinado:['lado',0,2.5],
  remoMaq:['maq',25,5],dominadaAsist:['ayuda',50,5],laterales:['db',4,2],facePull:['maq',12.5,2.5],martillo:['db',8,2],
  smithSentadilla:['lado',0,2.5],rumano:['db',12,2],zancadas:['db',0,2],gluteoMaq:['lado',5,5],aductora:['maq',25,5],crunchPolea:['maq',20,2.5],pallof:['maq',7.5,2.5],
- pressBanca:['lado',10,2.5],remoBarra:['lado',5,2.5],pressMilitarDb:['db',10,2],pressInclDb:['db',12,2],curlBarra:['barra',15,2.5],cruce:['maq',10,2.5],ruedaAbs:['corp'],elevPiernas:['corp']};
+ pressBanca:['lado',10,2.5],remoBarra:['lado',5,2.5],pressMilitarDb:['db',10,2],pressInclDb:['db',12,2],curlBarra:['barra',15,2.5],cruce:['maq',10,2.5],ruedaAbs:['corp'],elevPiernas:['corp'],
+ tricepsNuca:['maq',10,2.5],lateralesPolea:['maq',5,2.5],pajaros:['db',4,2],crunchInverso:['corp']};
 function parseReps(r){const n=(r.match(/\d+/g)||[10]).map(Number);return{min:n[0],max:n[1]&&n[1]>n[0]?n[1]:n[0],tiempo:/\d\s*s\b/.test(r)}}
 const nk=k=>(+k).toLocaleString('es-ES');
 function fmtKg(u,kg){kg=+kg||0;
@@ -876,7 +922,7 @@ function guardarHist(id,arr){
   const l=S.hist[id]=S.hist[id]||[];let e=l.find(x=>x.f===hoy());
   if(!e){e={f:hoy()};l.push(e)}
   e.sets=arr.map(x=>x?{kg:x.kg,reps:x.reps,ok:!!x.ok,feel:x.feel}:null);
-  if(l.length>8)l.splice(0,l.length-8);
+  if(l.length>150)l.splice(0,l.length-150);
 }
 function recomendarBase(id,r){
   const [u,ini,step]=PESO[id]||['corp'],R=parseReps(r);
@@ -973,9 +1019,16 @@ function renderAvisos(){
   if(S.faseVista===undefined){S.faseVista=fa;save()}
   if(S.faseVista!==fa)h+=`<div class="card hero"><div class="eyebrow">Nueva fase</div><div class="big">¡Subes a ${FASES[fa].n.split(' · ')[1]}!</div><p>${FASES[fa].txt}</p><button class="btn light" id="faseOk">Ver mi nueva semana</button></div>`;
   if(tocaRevision())h+=`<div class="banner"><span><b>Toca tu revisión semanal.</b> Tarda 2 minutos.</span><button class="btn" data-ir="peso">Hacerla</button></div>`;
+  const sf=semanaFase(),bk=fa+'-'+bloque();
+  if(sf>0&&sf%4===0&&S.faseVista===fa&&S.rotVista!==bk)h+=`<div class="banner"><span><b>Esta semana cambian tus ejercicios de brazo, hombro y abdomen.</b> Los grandes siguen igual para que midas tu progreso.</span><button class="btn ghost" id="rotOk">Vale</button></div>`;
+  const uf=FOTOS.length?FOTOS[FOTOS.length-1].f:null;
+  if(hoy()>=(uf?masDias(uf,28):S.inicio))h+=`<div class="banner"><span><b>${uf?'Toca tu foto de progreso.':'Hazte tu foto de "antes".'}</b> Solo se guarda en este celular.</span><button class="btn ghost" id="fotoIr">Hacerla</button></div>`;
   const dias=S.ultimaCopia?(new Date(hoy())-new Date(S.ultimaCopia))/864e5:(new Date(hoy())-new Date(S.inicio))/864e5;
   if(dias>=14)h+=`<div class="banner"><span><b>Guarda una copia de tus datos.</b> Hace ${Math.round(dias)} días que no la guardas.</span><button class="btn ghost" data-ir="resumen">Guardar copia</button></div>`;
   $('avisos').innerHTML=h;
+  [...$('avisos').children].slice(2).forEach(x=>x.hidden=true); // como mucho 2 avisos a la vez, por orden de importancia
+  $('rotOk')&&($('rotOk').onclick=()=>{S.rotVista=bk;save();renderAvisos()});
+  $('fotoIr')&&($('fotoIr').onclick=()=>{ir('v-progreso');document.querySelector('[data-seg="pfo"]').click()});
   $('faseOk')&&($('faseOk').onclick=()=>{S.faseVista=fa;save();renderAvisos();ir('v-semanal')});
   $('avisos').querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>ir({peso:'v-progreso',resumen:'v-copia'}[b.dataset.ir]));
 }
@@ -1070,6 +1123,90 @@ function renderCopia(){
   }
 }
 
+/* =================== MIS RÉCORDS =================== */
+const fmtCF=f=>new Date(f+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+function lapso(a,b){const d=Math.round((new Date(b)-new Date(a))/864e5);return d<14?d+' días':d<60?Math.round(d/7)+' semanas':Math.round(d/30)+' meses'}
+function serieFuerza(id){
+  const [u]=PESO[id]||['corp'];if(u==='corp'||!EX[id])return null;
+  const pts=(S.hist[id]||[]).map(h=>{const v=(h.sets||[]).filter(x=>x&&x.ok&&x.kg!==''&&x.kg!=null&&!isNaN(+x.kg)).map(x=>+x.kg);
+    return v.length?{f:h.f,kg:u==='ayuda'?Math.min(...v):Math.max(...v)}:null}).filter(Boolean);
+  return pts.length?{id,u,pts}:null;
+}
+function mejor(r){const k=r.pts.map(p=>p.kg);return r.u==='ayuda'?Math.min(...k):Math.max(...k)}
+function ganancia(r){const a=r.pts[0].kg,b=mejor(r);return r.u==='ayuda'?a-b:b-a}
+function frase(r){
+  const a=r.pts[0],b=mejor(r),fb=r.pts.find(p=>p.kg===b).f;
+  if(r.pts.length===1)return `Primera marca: ${fmtCorto(r.u,a.kg)}.`;
+  if(ganancia(r)<=0)return `Estable en ${fmtCorto(r.u,b)}. Sigue intentando completar las repeticiones.`;
+  return r.u==='ayuda'?`De ${nk(a.kg)} a ${nk(b)} kg de ayuda en ${lapso(a.f,fb)}: ya necesitas menos.`:`De ${fmtCorto(r.u,a.kg)} a ${fmtCorto(r.u,b)} en ${lapso(a.f,fb)}.`;
+}
+function graficaFuerza(r){
+  const W=320,H=120,L=28,R=10,T=14,B=20,P=r.pts,ks=P.map(p=>p.kg);
+  let lo=Math.min(...ks),hi=Math.max(...ks);if(hi-lo<2){lo-=1;hi+=1}
+  const t0=new Date(P[0].f).getTime(),t1=Math.max(new Date(P[P.length-1].f).getTime(),t0+7*864e5);
+  const x=f=>L+(new Date(f).getTime()-t0)/(t1-t0)*(W-L-R),y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  const d=P.map((p,i)=>(i?'L':'M')+x(p.f).toFixed(1)+' '+y(p.kg).toFixed(1)).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Evolución de ${esc(EX[r.id].n)}">
+   <line x1="${L}" x2="${W-R}" y1="${y(hi)}" y2="${y(hi)}" stroke="var(--line)"/><line x1="${L}" x2="${W-R}" y1="${y(lo)}" y2="${y(lo)}" stroke="var(--line)"/>
+   <text x="${L-5}" y="${y(hi)+4}" text-anchor="end">${nk(hi)}</text><text x="${L-5}" y="${y(lo)+4}" text-anchor="end">${nk(lo)}</text>
+   ${P.length>1?`<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round"/>`:''}
+   ${P.map((p,i)=>`<circle cx="${x(p.f)}" cy="${y(p.kg)}" r="${i===P.length-1?4.5:3}" fill="var(--accent)"/>`).join('')}
+   <text x="${L}" y="${H-5}">${fmtCF(P[0].f)}</text><text x="${W-R}" y="${H-5}" text-anchor="end">${fmtCF(P[P.length-1].f)}</text></svg>`;
+}
+function renderFuerza(){
+  const rows=Object.keys(S.hist).map(serieFuerza).filter(Boolean);
+  if(!rows.length){$('pf').innerHTML=`<div class="card"><h3>Tu fuerza</h3><p>Aquí verás cómo sube el peso que mueves en cada ejercicio, con tu mejor marca. Aparece cuando completes tu primera sesión de pesas.</p><p class="note" style="margin-top:8px">Cuando la báscula se estanque, mira aquí: si la fuerza sube, vas bien.</p></div>`;return}
+  rows.sort((a,b)=>b.pts[b.pts.length-1].f.localeCompare(a.pts[a.pts.length-1].f));
+  const top=rows.filter(r=>ganancia(r)>0).sort((a,b)=>ganancia(b)/Math.max(1,b.pts[0].kg)-ganancia(a)/Math.max(1,a.pts[0].kg))[0];
+  $('pf').innerHTML=(top?`<div class="card hero"><div class="eyebrow">Tu mejor progreso</div><div class="big">${EX[top.id].n}</div><p>${frase(top)}</p></div>`:'')+
+   rows.map(r=>`<details class="card fold"><summary><span class="dtxt"><b>${EX[r.id].n}</b><small>${frase(r)}</small></span></summary>${graficaFuerza(r)}
+    <div class="loglist" style="margin-top:8px">${r.pts.slice().reverse().slice(0,8).map(p=>`<div><span>${fmtCF(p.f)}</span><span>${fmtCorto(r.u,p.kg)}${p.kg===mejor(r)?' · <b style="color:var(--accent)">récord</b>':''}</span></div>`).join('')}</div></details>`).join('');
+}
+
+/* =================== FOTOS DE PROGRESO =================== */
+// Van en su propia clave para no inflar los datos principales ni la copia de seguridad.
+const FKEY=KEY+'.fotos';let FOTOS=[],fotoPose='frente',fotoBorrar=-1;
+try{FOTOS=JSON.parse(localStorage.getItem(FKEY))||[]}catch(e){}
+function guardarFotos(){try{localStorage.setItem(FKEY,JSON.stringify(FOTOS));return true}catch(e){return false}}
+function renderFotos(){
+  const L=FOTOS.filter(x=>x.pose===fotoPose),uf=FOTOS.length?FOTOS[FOTOS.length-1].f:null,prox=uf?masDias(uf,28):hoy();
+  const cap=(x,t)=>`<figcaption><b>${t}</b> · ${fmtCF(x.f)}${x.kg?' · '+f1(x.kg)+' kg':''}</figcaption>`;
+  let h=`<div class="card"><div class="seg" style="margin:0 0 12px"><button data-pose="frente" aria-pressed="${fotoPose==='frente'}">De frente</button><button data-pose="perfil" aria-pressed="${fotoPose==='perfil'}">De perfil</button></div>`;
+  if(L.length>=2){const a=L[0],b=L[L.length-1],dk=a.kg&&b.kg?a.kg-b.kg:null;
+    h+=`<div class="comp"><figure><img src="${a.img}" alt="Foto de antes, ${fmtCF(a.f)}">${cap(a,'Antes')}</figure><figure><img src="${b.img}" alt="Foto de ahora, ${fmtCF(b.f)}">${cap(b,'Ahora')}</figure></div>
+     <p class="note" style="margin-top:8px">${lapso(a.f,b.f)} entre las dos fotos${dk>0?` y ${f1(dk)} kg menos`:''}. Fíjate en la cintura y en la barriga.</p>`;
+  }else if(L.length===1){const a=L[0];
+    h+=`<div class="comp"><figure><img src="${a.img}" alt="Foto de antes, ${fmtCF(a.f)}">${cap(a,'Antes')}</figure><figure class="vacia"><span>Tu próxima foto:<br><b>${fmtCF(prox)}</b></span></figure></div>`;
+  }else h+=`<p>Hazte hoy tu primera foto ${fotoPose==='frente'?'de frente':'de perfil'}: será tu "antes". Cada 4 semanas te pido otra y aquí las comparas.</p>`;
+  h+=`<label class="btn" style="display:block;text-align:center;margin-top:14px;color:#fff;font-size:.98rem">Hacer foto ${fotoPose==='frente'?'de frente':'de perfil'}<input type="file" id="fotoIn" accept="image/*" capture="environment" hidden></label>
+   <p class="note" id="fotoMsg" style="margin-top:8px">${uf?'Próxima foto: '+fmtF(prox)+'.':''} Las fotos se guardan solo en este celular y no van en la copia de seguridad.</p></div>
+   <details class="card fold"><summary>Cómo hacer buenas fotos</summary><ul class="tips">
+    <li>Mismo sitio, misma luz y a la misma hora (mejor por la mañana, en ayunas).</li>
+    <li>Pantaloneta o ropa interior, para que se vea la barriga.</li>
+    <li>Abdomen relajado, sin meterlo.</li>
+    <li>Pide a alguien que te la tome, o apoya el celular y usa el temporizador de la cámara.</li></ul></details>`;
+  if(FOTOS.length)h+=`<details class="card fold"${fotoBorrar>=0?' open':''}><summary>Todas tus fotos (${FOTOS.length})</summary><div class="galeria">${FOTOS.map((x,i)=>`<figure><img src="${x.img}" alt="Foto ${x.pose}, ${fmtCF(x.f)}"><figcaption>${fmtCF(x.f)} · ${x.pose}</figcaption>
+     <div class="row" style="gap:10px"><a class="video" style="font-size:.75rem" download="forja-${x.f}-${x.pose}.jpg" href="${x.img}">Guardar</a><button class="linkBad" data-fdel="${i}">${fotoBorrar===i?'¿Seguro? Toca otra vez':'Borrar'}</button></div></figure>`).join('')}</div>
+     <p class="note" style="margin-top:8px">"Guardar" la descarga a tu celular, por si un día cambias de teléfono.</p></details>`;
+  $('pfo').innerHTML=h;
+  $('pfo').querySelectorAll('[data-pose]').forEach(b=>b.onclick=()=>{fotoPose=b.dataset.pose;fotoBorrar=-1;renderFotos()});
+  $('pfo').querySelectorAll('[data-fdel]').forEach(b=>b.onclick=()=>{const i=+b.dataset.fdel;if(fotoBorrar===i){FOTOS.splice(i,1);guardarFotos();fotoBorrar=-1;renderAvisos()}else fotoBorrar=i;renderFotos()});
+  $('fotoIn').onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    const url=URL.createObjectURL(file),im=new Image();
+    im.onload=()=>{
+      const sc=Math.min(1,640/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+      const nueva={f:hoy(),pose:fotoPose,img:c.toDataURL('image/jpeg',0.72),kg:pesoActual()},antes=FOTOS.slice();
+      FOTOS=FOTOS.filter(x=>!(x.f===nueva.f&&x.pose===nueva.pose));FOTOS.push(nueva);
+      if(!guardarFotos()){FOTOS=antes;renderFotos();$('fotoMsg').textContent='No hay espacio para más fotos. Guarda y borra alguna vieja.';return}
+      renderFotos();renderAvisos();
+    };
+    im.onerror=()=>{URL.revokeObjectURL(url);$('fotoMsg').textContent='No pude leer esa imagen. Prueba con otra foto.'};
+    im.src=url;
+  };
+}
+
 /* =================== PROFESOR =================== */
 let diaSel=(new Date().getDay()+6)%7;
 function pasosDe(dia){
@@ -1081,7 +1218,7 @@ function pasosDe(dia){
 }
 function sesion(){
   const k=hoy();
-  if(!S.ses[k]||S.ses[k].dia!==diaSel||(S.ses[k].fase||1)!==faseActual())S.ses[k]={dia:diaSel,fase:faseActual(),paso:0,sets:{},hechos:{}};
+  if(!S.ses[k]||S.ses[k].dia!==diaSel||(S.ses[k].fase||1)!==faseActual()||(S.ses[k].rot||0)!==(rotado()?1:0))S.ses[k]={dia:diaSel,fase:faseActual(),rot:rotado()?1:0,paso:0,sets:{},hechos:{}};
   return S.ses[k];
 }
 function renderCoach(){
@@ -1209,11 +1346,12 @@ function renderSemana(){
    <label style="margin-top:12px">Cambiar de fase<select id="faseSel"><option value="0">Automática, según tus semanas</option><option value="1">Fase 1 · Base</option><option value="2">Fase 2 · Intermedia</option><option value="3">Fase 3 · Avanzada</option></select></label>
    <p class="note" style="margin-top:6px">Déjala en automática. Cámbiala a mano solo si un instructor te lo recomienda o si ya entrenabas antes.</p></div>
    ${esDescarga()?'<div class="banner"><span><b>Esta semana es de descarga:</b> una serie menos y un 15% menos de peso.</span></div>':''}
+   <p class="note" style="margin:0 0 10px">Bloque ${bloque()+1} de la fase · complementarios ${rotado()?'B':'A'}. Brazos, hombro y abdomen cambian cada 4 semanas.</p>
    <div class="eyebrow" style="margin:6px 0 8px">Días de la ${FASES[fa].n.split(' · ')[0].toLowerCase()}</div>`+PLAN.map(p=>`<details class="card fold"><summary><span class="dnum">${p.d}</span><span class="dtxt"><b>${p.t}</b><small>${p.min?p.min+' min · ':''}${p.foco}</small></span></summary>
    ${p.ex.length?`<ol class="pasos">${p.ex.map(x=>`<li>${EX[x[0]].n} <span class="note">· ${seriesDe(x[1])}×${x[2]}</span></li>`).join('')}</ol>`:`<p class="note">${esc(p.final.map(x=>x[2]).join(' '))}</p>`}</details>`).join('');
   $('faseSel').value=String(S.faseManual||0);
   $('faseSel').onchange=e=>{const v=+e.target.value;S.faseManual=v||null;S.faseDesde=semanaN();S.faseVista=faseActual();save();render()};
-  const usados=new Set(Object.values(PLANES).flatMap(P=>P.flatMap(p=>p.ex.map(x=>x[0]))));
+  const usados=new Set([...Object.values(PLANES).flatMap(P=>P.flatMap(p=>p.ex.map(x=>x[0]))),...Object.values(ROTA)]);
   const fila=(id,n,z,cuerpo)=>`<details class="card fold"><summary><span class="dtxt"><b>${n}</b><small>${z}</small></span></summary>${dibujo(id,n)}${cuerpo}</details>`;
   $('listaMaq').innerHTML=`<div class="eyebrow" style="margin:4px 0 8px">Pesas</div>`+[...usados].map(id=>{const E=EX[id];return fila(id,E.n,E.zona,
    `<p>${E.maq}</p><ol class="pasos" style="margin-top:8px">${E.pasos.map(p=>`<li>${p}</li>`).join('')}</ol><p class="note" style="margin-top:8px">Si no está: ${E.alt}. <a class="video" href="${yt(E.n)}" target="_blank" rel="noopener">Ver vídeo ↗</a></p>`)}).join('')+
@@ -1221,7 +1359,7 @@ function renderSemana(){
 }
 
 function render(){
-  PLAN=PLANES[faseActual()];
+  PLAN=rotar(PLANES[faseActual()]);
   const c=calc(),p=S.perfil;
   const perdido=p.peso-c.w;
   $('tiles').innerHTML=`<div class="tile main"><span>Peso</span><b>${f1(c.w)}</b><small>${perdido>0?'−'+f1(perdido)+' kg ya':'kg'}</small></div>
@@ -1237,7 +1375,7 @@ function render(){
   let acc=0,pw=c.w;
   f.forEach(([pct,n,t])=>{const kg=falta*pct,s=Math.max(1,Math.ceil(kg/0.6));r.push(`<tr><td><b>${n}</b></td><td>${acc+1}–${acc+s}</td><td>${Math.round(pw)} → ${Math.round(pw-kg)} kg</td><td>${t}</td></tr>`);acc+=s;pw-=kg});
   $('ruta').innerHTML=r.join('');
-  renderMenu(c);renderPeso();renderCoach();renderSemana();renderHabitos();renderRevision();renderAvisos();renderContador();renderCopia();
+  renderMenu(c);renderPeso();renderCoach();renderSemana();renderHabitos();renderRevision();renderAvisos();renderContador();renderCopia();renderFuerza();renderFotos();
 }
 
 const campos={fSexo:'sexo',fEdad:'edad',fAltura:'altura',fPeso:'peso',fAct:'act'};
