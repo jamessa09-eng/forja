@@ -184,6 +184,13 @@ svg text{fill:var(--muted);font:600 11px var(--body)}
 .meal b{font-family:var(--display);font-stretch:75%;font-size:1.05rem;text-transform:uppercase}
 .meal span:first-of-type{grid-column:1/-1;font-size:.9rem}
 .meal span:last-child{grid-row:1;grid-column:2;text-align:right;color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.kcalN{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:700;margin:2px 0 6px}
+.kcalN b{font-family:var(--display);font-stretch:75%;font-size:1.7rem;color:var(--fg)}
+.kcalN b.pasa{color:var(--warn)}
+.faseRow{padding:10px 12px;border-radius:14px;border:1px solid var(--line);margin-top:8px}
+.faseRow.on{border-color:var(--accent-line);background:var(--accent-soft)}
+.faseRow b{display:block}
+.faseRow small{display:block;color:var(--muted);font-weight:700;font-size:.78rem}
 .macro{display:grid;grid-template-columns:110px 1fr 64px;align-items:center;gap:10px;margin:10px 0;font-variant-numeric:tabular-nums;font-size:.9rem}
 
 /* Más */
@@ -515,13 +522,54 @@ const EX={
   maq:'Colchoneta.',
   ajuste:'De lado, apoyado en el antebrazo.',
   pasos:['Cadera arriba, cuerpo en línea recta.','Aguanta y cambia de lado.'],
-  error:'Dejar caer la cadera.',ini:'Peso corporal',alt:'Con la rodilla de abajo apoyada'}
+  error:'Dejar caer la cadera.',ini:'Peso corporal',alt:'Con la rodilla de abajo apoyada'},
+ pressBanca:{n:'Press de banca con barra',zona:'Pecho, hombro frontal, tríceps',
+  maq:'Banco plano con soportes para dejar la barra (o la máquina Smith con un banco plano debajo). La barra olímpica pesa 20 kg sin discos.',
+  ajuste:'Acuéstate con los ojos justo debajo de la barra. Agarre un poco más abierto que los hombros. Pon siempre los seguros a los discos y, si vas pesado, pide a alguien que te cuide (spot) o hazlo en la Smith.',
+  pasos:['Pies firmes en el suelo, junta las escápulas y saca un poco el pecho.','Baja la barra controlada hasta la mitad del pecho.','Empuja hacia arriba hasta estirar los brazos.'],
+  error:'Rebotar la barra en el pecho o despegar el glúteo del banco.',alt:'Press de banca en máquina Smith'},
+ remoBarra:{n:'Remo con barra',zona:'Espalda media, dorsales, bíceps',
+  maq:'Barra olímpica con discos, o una barra fija con el peso marcado. Se hace de pie, inclinado hacia delante.',
+  ajuste:'Pies a la anchura de la cadera, agarre a la anchura de los hombros.',
+  pasos:['Rodillas un poco dobladas, echa la cadera atrás e inclina el torso unos 45° con la espalda recta.','Tira de la barra hacia el ombligo llevando los codos atrás.','Baja controlando hasta estirar los brazos.'],
+  error:'Encorvar la espalda o levantarte para mover el peso.',alt:'Remo con mancuerna a una mano'},
+ pressMilitarDb:{n:'Press de hombro con mancuernas',zona:'Hombros, tríceps',
+  maq:'Banco con respaldo casi vertical y dos mancuernas.',
+  ajuste:'Respaldo a 80-90°. Sube las mancuernas apoyándolas primero en los muslos.',
+  pasos:['Mancuernas a la altura de las orejas, palmas hacia delante.','Empuja hacia arriba hasta casi juntarlas.','Baja despacio hasta la altura de las orejas.'],
+  error:'Arquear la zona lumbar.',alt:'Press de hombro en máquina'},
+ pressInclDb:{n:'Press inclinado con mancuernas',zona:'Pecho superior, hombro',ani:'smithInclinado',
+  maq:'Banco inclinado (unos 30°) y dos mancuernas.',
+  ajuste:'Respaldo a 30°. Siéntate con las mancuernas en los muslos y túmbate llevándolas al pecho.',
+  pasos:['Mancuernas a los lados del pecho, codos a unos 45° del cuerpo.','Empuja hacia arriba y un poco hacia dentro.','Baja despacio hasta sentir el estiramiento.'],
+  error:'Abrir demasiado los codos: molesta el hombro.',alt:'Press inclinado en Smith'},
+ curlBarra:{n:'Curl de bíceps con barra',zona:'Bíceps',
+  maq:'Barra recta o barra en Z (con curvas). Suele haber barras con el peso ya marcado en un estante.',
+  ajuste:'Agarre con las palmas hacia arriba, a la anchura de los hombros.',
+  pasos:['De pie, codos pegados a los costados.','Sube la barra doblando solo los codos.','Baja despacio hasta estirar.'],
+  error:'Balancear la espalda para subir.',alt:'Curl en polea'},
+ cruce:{n:'Cruce de poleas',zona:'Pecho',ani:'peckDeck',
+  maq:'Dos torres de poleas enfrentadas, con un agarre en cada una y las poleas arriba.',
+  ajuste:'Poleas en la posición alta, un agarre en cada mano. Da un paso adelante.',
+  pasos:['Brazos abiertos, codos un poco doblados, torso un poco inclinado.','Junta las manos delante del pecho, como un abrazo.','Vuelve despacio abriendo los brazos.'],
+  error:'Doblar mucho los codos y convertirlo en un press.',alt:'Peck deck'},
+ ruedaAbs:{n:'Rueda abdominal',zona:'Abdomen completo (los cuadros)',
+  maq:'Una rueda pequeña con dos agarres. Suele estar en la zona de colchonetas o de entrenamiento funcional.',
+  ajuste:'De rodillas sobre una colchoneta.',
+  pasos:['Rueda debajo de los hombros, abdomen apretado.','Rueda hacia delante despacio hasta donde aguantes con la espalda recta.','Vuelve tirando con el abdomen.'],
+  error:'Dejar que se hunda la zona lumbar.',alt:'Plancha con brazos estirados'},
+ elevPiernas:{n:'Elevación de piernas en la torre de abdomen',zona:'Abdomen inferior',
+  maq:'La misma torre de abdomen de la Fase 1: respaldo y apoyos para los antebrazos.',
+  ajuste:'Sube por el escalón y apoya los antebrazos.',
+  pasos:['Piernas casi rectas y juntas.','Súbelas hasta que queden paralelas al suelo, enrollando un poco la pelvis.','Baja despacio sin balancearte.'],
+  error:'Balancear las piernas para subir.',alt:'Elevación de rodillas (más fácil)'}
 };
 const CARDIO={
  cinta:{n:'Cinta de correr (trotadora)',como:'Pon velocidad 5-6 km/h para caminar rápido. Si pide inclinación, súbela a 8-12%. No te agarres de las barras.'},
  bici:{n:'Bicicleta estática',como:'Ajusta el sillín a la altura de la cadera. Pedalea a un ritmo en el que puedas hablar.'},
  eliptica:{n:'Elíptica',como:'Pies completos en los pedales, empuja y tira con los brazos. Ritmo cómodo.'},
- escaladora:{n:'Escaladora (escaleras)',como:'Velocidad baja (nivel 3-5). Sube erguido sin apoyar el peso en las barras.'}
+ escaladora:{n:'Escaladora (escaleras)',como:'Velocidad baja (nivel 3-5). Sube erguido sin apoyar el peso en las barras.'},
+ hiit:{n:'Intervalos en bici',como:'20 segundos pedaleando lo más fuerte que puedas y 40 segundos muy suave. Usa el cronómetro. Si te mareas, para y sigue suave.'}
 };
 
 /* =================== DIBUJOS ANIMADOS =================== */
@@ -612,6 +660,18 @@ const ANI={
  escaladora:{per:1300,A:{h:[112,32],s:[110,50],p:[108,94],k:[130,104],f:[126,132],k2:[112,128],f2:[110,158],e:[124,70],w:[140,74],e2:[120,72],w2:[136,78]},B:{k:[112,128],f:[110,158],k2:[130,104],f2:[126,132]},
   bg:c=>{c.R(96,160,70,4);c.R(112,134,60,4);c.R(128,108,50,4);c.L([140,74],[176,58],3);c.L([176,58],[176,162],4)}}
 };
+Object.assign(ANI,{
+ pressBanca:{A:{h:[50,106],s:[64,110],p:[120,112],k:[150,118],f:[158,160],e:[66,128],w:[78,100]},B:{e:[74,84],w:[78,60]},
+  bg:c=>{c.L([58,40],[58,118],3,'far');c.L([98,40],[98,118],3,'far');c.R(40,118,110,8);c.L([60,126],[60,162],4);c.L([130,126],[130,162],4)},fg:(c,P)=>disco(c,P.w,12)},
+ remoBarra:{A:{p:[92,92],s:[134,72],h:[150,64],k:[106,126],f:[108,160],e:[136,96],w:[136,120]},B:{e:[116,84],w:[128,102]},fg:(c,P)=>disco(c,P.w,12)},
+ pressMilitarDb:{v:'front',A:X(FR,{e:[150,84],w:[150,62]}),B:{e:[148,50],w:[142,22]},
+  bg:c=>{c.R(104,28,32,86,'soft');c.R(92,112,56,8);c.L([120,120],[120,162],4)},fg:(c,P)=>{[P.w[0],240-P.w[0]].forEach(x=>c.R(x-3,P.w[1]-9,6,18,'move'))}},
+ curlBarra:{A:X(STAND,{e:[112,78],w:[118,104]}),B:{w:[124,58]},fg:(c,P)=>{c.L([P.w[0]-4,P.w[1]],[P.w[0]+10,P.w[1]],5,'move');c.C([P.w[0]+10,P.w[1]],6,'move')}},
+ ruedaAbs:{per:3400,A:{k:[100,150],f:[72,154],p:[104,118],s:[124,94],h:[138,90],e:[128,122],w:[132,148]},B:{p:[118,132],s:[160,130],h:[176,128],e:[178,140],w:[194,148]},
+  bg:c=>c.R(40,157,170,5,'soft'),fg:(c,P)=>{c.C([P.w[0],P.w[1]+2],7,'move');c.O([P.w[0],P.w[1]+2],2.5,'soft')}}
+});
+ANI.elevPiernas={A:ANI.rodillas.A,B:{k:[130,100],f:[158,98]},bg:ANI.rodillas.bg};
+ANI.hiit=Object.assign({},ANI.bici,{per:600});
 let COL={};
 function leerColores(){const cs=getComputedStyle(document.documentElement),v=n=>cs.getPropertyValue(n).trim();
   COL={fig:v('--fig'),frame:v('--m-frame'),pad:v('--m-pad'),soft:v('--m-soft'),far:v('--m-far'),move:v('--accent')}}
@@ -656,11 +716,11 @@ function dibujar(cv,time){
 }
 function bucle(time){document.querySelectorAll('canvas[data-ani]').forEach(cv=>{if(cv.offsetParent!==null)dibujar(cv,time)});requestAnimationFrame(bucle)}
 requestAnimationFrame(bucle);
-const dibujo=(id,txt)=>ANI[id]?`<figure class="ani"><canvas data-ani="${id}" role="img" aria-label="Dibujo animado: ${esc(txt)}"></canvas><figcaption>En naranja, lo que se mueve: palancas, cables y pesas.</figcaption></figure>`:'';
+const dibujo=(id,txt)=>{const aid=(EX[id]&&EX[id].ani)||id;return ANI[aid]?`<figure class="ani"><canvas data-ani="${aid}" role="img" aria-label="Dibujo animado: ${esc(txt)}"></canvas><figcaption>En naranja, lo que se mueve: palancas, cables y pesas.</figcaption></figure>`:''};
 
 /* =================== PLAN SEMANAL =================== */
 // Cada ejercicio: [id, series, reps, descanso(s)]
-const PLAN=[
+const PLAN1=[
  {d:'Lun',t:'Tren superior A',foco:'Pecho, espalda, hombro y brazos',min:60,
   inicio:[['cinta','Calentar: cinta caminando','6 min a 5,5 km/h'],['mov','Movilidad de hombros','10 círculos de brazos adelante y 10 atrás, 10 rotaciones de cintura']],
   ex:[['pressPecho',3,'10-12',90],['jalon',3,'10-12',90],['pressHombro',3,'10-12',90],['remoSentado',3,'10-12',90],['peckDeck',2,'12-15',60],['curlPolea',2,'12',60],['triceps',2,'12',60]],
@@ -688,6 +748,73 @@ const PLAN=[
  {d:'Dom',t:'Descanso',foco:'Recuperar',min:0,inicio:[],ex:[],
   final:[['paseo','Paseo largo','Camina 40-60 min (8.000-10.000 pasos). Prepara la comida de la semana.']]}
 ];
+const PLAN2=[
+ {d:'Lun',t:'Superior fuerza',foco:'Pecho, espalda y hombro con barra y mancuernas',min:65,
+  inicio:[['cinta','Calentar: cinta','6 min a 5,5 km/h'],['mov','Series de aproximación','Press de banca: barra sola ×10 y ×5 con medio peso']],
+  ex:[['pressBanca',4,'6-8',150],['remoBarra',4,'6-8',120],['pressMilitarDb',3,'8-10',90],['jalon',3,'8-10',90],['laterales',3,'12-15',60],['curlBarra',3,'8-10',60],['triceps',3,'10-12',60]],
+  final:[['cinta','Cardio de quema','12 min en cinta inclinada'],['est','Estirar','Pecho, espalda y hombros: 30 s cada uno']]},
+ {d:'Mar',t:'Pierna fuerza + abdomen',foco:'Sentadilla pesada, femoral y core',min:65,
+  inicio:[['bici','Calentar: bicicleta','6 min suave'],['mov','Series de aproximación','Sentadilla: barra sola ×10 y ×5 con medio peso']],
+  ex:[['smithSentadilla',4,'6-8',150],['rumano',4,'8-10',120],['prensa',3,'10-12',90],['femoral',3,'10-12',60],['gemelos',4,'12-15',45],['ruedaAbs',3,'8-10',60]],
+  final:[['eliptica','Cardio suave','10 min en elíptica'],['est','Estirar','Piernas y cadera: 30 s cada estiramiento']]},
+ {d:'Mié',t:'Intervalos + abdomen',foco:'Quemar grasa con intervalos cortos',min:40,
+  inicio:[['cinta','Calentar: cinta','5 min caminando']],
+  ex:[['elevPiernas',3,'8-12',60],['pallof',3,'10 c/lado',45],['planchaLat',3,'30 s c/lado',30]],
+  final:[['hiit','Intervalos en bici','10 rondas de 20 s a tope + 40 s suave (10 min)'],['cinta','Cardio suave','15 min en cinta inclinada'],['est','Estirar','5 min']]},
+ {d:'Jue',t:'Superior volumen',foco:'Pecho alto, espalda ancha y hombros (forma en V)',min:60,
+  inicio:[['eliptica','Calentar: elíptica','6 min suave'],['mov','Movilidad','Círculos de brazos + 15 face pull muy ligeros']],
+  ex:[['pressInclDb',4,'8-10',90],['dominadaAsist',4,'6-10',120],['remoSentado',3,'10-12',90],['cruce',3,'12-15',60],['laterales',3,'12-15',60],['facePull',3,'15',60],['martillo',3,'10-12',60]],
+  final:[['escaladora','Cardio de quema','12 min en escaladora'],['est','Estirar','Pecho, hombros y espalda: 30 s cada uno']]},
+ {d:'Vie',t:'Pierna volumen + abdomen',foco:'Glúteo, pierna y abdomen',min:65,
+  inicio:[['bici','Calentar: bicicleta','6 min suave'],['mov','Activar','10 puentes de glúteo + 10 zancadas sin peso']],
+  ex:[['gluteoMaq',4,'8-10',120],['zancadas',3,'10 c/pierna',90],['extension',3,'12-15',60],['femoral',3,'12',60],['crunchPolea',4,'10-12',60],['elevPiernas',3,'8-12',60]],
+  final:[['bici','Cardio suave','10 min en bici'],['est','Estirar','Piernas y cadera: 30 s cada uno']]},
+ {d:'Sáb',t:'Cardio largo + abdomen',foco:'Cardio a ritmo cómodo y core',min:50,
+  inicio:[['bici','Calentar: bici','5 min suave']],
+  ex:[['ruedaAbs',3,'8-10',60],['plancha',3,'45 s',45]],
+  final:[['eliptica','Cardio principal','35 min entre elíptica y cinta inclinada, a un ritmo en el que puedas hablar'],['est','Estirar','5 min']]},
+ {d:'Dom',t:'Descanso',foco:'Recuperar',min:0,inicio:[],ex:[],final:[['paseo','Paseo largo','Camina 40-60 min (8.000-10.000 pasos). Prepara la comida de la semana.']]}
+];
+const PLAN3=[
+ {d:'Lun',t:'Empuje',foco:'Pecho, hombro y tríceps',min:65,
+  inicio:[['cinta','Calentar: cinta','6 min'],['mov','Series de aproximación','Press de banca: barra sola ×10, ×5 y ×3 subiendo']],
+  ex:[['pressBanca',4,'5-8',150],['pressInclDb',3,'8-10',90],['pressMilitarDb',3,'8-10',90],['laterales',4,'12-15',60],['cruce',3,'12-15',60],['triceps',3,'10-12',60]],
+  final:[['cinta','Cardio de quema','10 min en cinta inclinada'],['est','Estirar','5 min']]},
+ {d:'Mar',t:'Tirón',foco:'Espalda y bíceps',min:65,
+  inicio:[['eliptica','Calentar: elíptica','6 min'],['mov','Series de aproximación','Remo con barra: 2 series ligeras']],
+  ex:[['dominadaAsist',4,'6-10',120],['remoBarra',4,'6-8',120],['remoSentado',3,'10-12',90],['facePull',3,'15',60],['curlBarra',3,'8-10',60],['martillo',3,'10-12',60]],
+  final:[['escaladora','Cardio de quema','10 min en escaladora'],['est','Estirar','5 min']]},
+ {d:'Mié',t:'Pierna + abdomen',foco:'Fuerza de pierna y core',min:70,
+  inicio:[['bici','Calentar: bicicleta','6 min'],['mov','Series de aproximación','Sentadilla: barra sola ×10, ×5 y ×3 subiendo']],
+  ex:[['smithSentadilla',4,'5-8',180],['rumano',4,'8-10',120],['prensa',3,'10-12',90],['femoral',3,'10-12',60],['gemelos',4,'12-15',45],['ruedaAbs',3,'10-12',60]],
+  final:[['bici','Cardio suave','10 min en bici'],['est','Estirar','5 min']]},
+ {d:'Jue',t:'Intervalos + core',foco:'Quemar grasa y recuperar',min:35,
+  inicio:[['cinta','Calentar: cinta','5 min']],
+  ex:[['elevPiernas',3,'10-15',60],['pallof',3,'12 c/lado',45],['planchaLat',3,'40 s c/lado',30]],
+  final:[['hiit','Intervalos en bici','12 rondas de 20 s a tope + 40 s suave (12 min)'],['est','Estirar','5 min']]},
+ {d:'Vie',t:'Torso volumen',foco:'Forma en V: hombro, espalda ancha y pecho',min:65,
+  inicio:[['eliptica','Calentar: elíptica','6 min'],['mov','Movilidad','Círculos de brazos + face pull ligeros']],
+  ex:[['pressInclDb',3,'10-12',75],['jalon',4,'10-12',75],['remoMaq',3,'10-12',75],['laterales',4,'15',45],['peckDeck',3,'12-15',60],['curlPolea',3,'12',45],['triceps',3,'12',45]],
+  final:[['cinta','Cardio de quema','12 min en cinta inclinada'],['est','Estirar','5 min']]},
+ {d:'Sáb',t:'Pierna volumen + abdomen',foco:'Glúteo, pierna y abdomen',min:65,
+  inicio:[['bici','Calentar: bicicleta','6 min'],['mov','Activar','10 puentes de glúteo + 10 zancadas sin peso']],
+  ex:[['gluteoMaq',4,'8-10',120],['zancadas',3,'10 c/pierna',90],['extension',3,'12-15',60],['abductora',3,'15',45],['crunchPolea',4,'10-12',60],['elevPiernas',3,'10-15',60]],
+  final:[['eliptica','Cardio suave','15 min en elíptica'],['est','Estirar','5 min']]},
+ {d:'Dom',t:'Descanso',foco:'Recuperar',min:0,inicio:[],ex:[],final:[['paseo','Paseo largo','Camina 40-60 min (8.000-10.000 pasos).']]}
+];
+const FASES={
+ 1:{n:'Fase 1 · Base',sem:'Semanas 1-12',txt:'Máquinas y técnica. Aprendes los movimientos y ganas fuerza rápido.'},
+ 2:{n:'Fase 2 · Intermedia',sem:'Semanas 13-26',txt:'Entran la barra y las mancuernas. Series más pesadas (6-8 repeticiones) en los ejercicios grandes e intervalos para quemar más.'},
+ 3:{n:'Fase 3 · Avanzada',sem:'Semana 27 en adelante',txt:'5 días por grupos musculares, más volumen para definir y una semana suave cada 6.'}};
+const PLANES={1:PLAN1,2:PLAN2,3:PLAN3};
+let PLAN=PLAN1;
+function faseAuto(){const w=semanaN();return w<=12?1:w<=26?2:3}
+function faseActual(){return S.faseManual||faseAuto()}
+function esDescarga(){
+  const f=faseActual();if(f===1)return false;
+  const desde=S.faseManual?(S.faseDesde||semanaN()):(f===2?13:27),n=semanaN()-desde+1;
+  return n>0&&n%6===0;
+}
 
 /* =================== ESTADO =================== */
 const KEY='planDefinicion.v1';
@@ -701,7 +828,7 @@ const f1=n=>n.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDig
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const semanaN=()=>Math.max(1,Math.floor((new Date(hoy())-new Date(S.inicio))/6048e5)+1);
-const seriesDe=s=>semanaN()<=2?Math.max(2,s-1):s;
+const seriesDe=s=>(faseActual()===1&&semanaN()<=2)||esDescarga()?Math.max(2,s-1):s;
 const mmss=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 const yt=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q+' técnica gimnasio');
 
@@ -724,13 +851,15 @@ const PESO={pressPecho:['maq',20,5],jalon:['maq',30,5],pressHombro:['maq',15,5],
  curlPolea:['maq',15,2.5],triceps:['maq',15,2.5],prensa:['lado',10,5],extension:['maq',20,5],femoral:['maq',20,5],abductora:['maq',25,5],
  gemelos:['lado',10,5],crunchMaq:['maq',20,5],plancha:['corp'],planchaLat:['corp'],rodillas:['corp'],smithInclinado:['lado',0,2.5],
  remoMaq:['maq',25,5],dominadaAsist:['ayuda',50,5],laterales:['db',4,2],facePull:['maq',12.5,2.5],martillo:['db',8,2],
- smithSentadilla:['lado',0,2.5],rumano:['db',12,2],zancadas:['db',0,2],gluteoMaq:['lado',5,5],aductora:['maq',25,5],crunchPolea:['maq',20,2.5],pallof:['maq',7.5,2.5]};
+ smithSentadilla:['lado',0,2.5],rumano:['db',12,2],zancadas:['db',0,2],gluteoMaq:['lado',5,5],aductora:['maq',25,5],crunchPolea:['maq',20,2.5],pallof:['maq',7.5,2.5],
+ pressBanca:['lado',10,2.5],remoBarra:['lado',5,2.5],pressMilitarDb:['db',10,2],pressInclDb:['db',12,2],curlBarra:['barra',15,2.5],cruce:['maq',10,2.5],ruedaAbs:['corp'],elevPiernas:['corp']};
 function parseReps(r){const n=(r.match(/\d+/g)||[10]).map(Number);return{min:n[0],max:n[1]&&n[1]>n[0]?n[1]:n[0],tiempo:/\d\s*s\b/.test(r)}}
 const nk=k=>(+k).toLocaleString('es-ES');
 function fmtKg(u,kg){kg=+kg||0;
   if(u==='db')return kg?`${nk(kg)} kg cada mancuerna`:'Sin peso, solo tu cuerpo';
   if(u==='lado')return kg?`${nk(kg)} kg a cada lado`:'Sin discos (solo la barra)';
   if(u==='ayuda')return `${nk(kg)} kg de ayuda`;
+  if(u==='barra')return `Barra de ${nk(kg)} kg`;
   if(u==='corp')return 'Tu peso corporal';
   return `${nk(kg)} kg <small>(≈ ${Math.round(kg*2.2)} lb)</small>`;}
 const fmtCorto=(u,kg)=>fmtKg(u,kg).replace(/ <small>.*<\/small>/,'');
@@ -738,6 +867,7 @@ function ayudaPeso(u,kg){
   if(u==='maq')return `<details><summary>¿Cómo pongo el peso en la máquina?</summary><p>Las máquinas tienen una columna de placas. Se elige el peso metiendo el <b>pasador</b> (una varilla metálica) en el agujero de la placa: cuanto más abajo, más peso. Busca la placa que marque ${nk(kg)} kg. Si marca libras (lb), busca la más cercana a ${Math.round(kg*2.2)} lb. Si solo tiene números (1, 2, 3...), empieza por la placa ${Math.max(2,Math.round(kg/5))} y ajusta con la primera serie.</p></details>`;
   if(u==='lado')return `<details><summary>¿Cómo pongo los discos?</summary><p>Pon el mismo disco a cada lado y asegúralo con el seguro (la pinza). ${kg?`Para ${nk(kg)} kg por lado: ${kg>=10?'un disco de '+nk(kg)+' kg o la combinación que sume eso':'un disco de '+nk(kg)+' kg'} en cada lado.`:'Hoy no pongas discos: la barra ya pesa.'}</p></details>`;
   if(u==='db')return kg?`<details><summary>¿Dónde están las mancuernas?</summary><p>En el estante (rack) frente a los espejos. El peso está escrito en el extremo de cada mancuerna. Coge dos de ${nk(kg)} kg, una para cada mano.</p></details>`:'';
+  if(u==='barra')return `<details><summary>¿Qué barra cojo?</summary><p>En el estante hay barras con el peso ya marcado. Coge la de ${nk(kg)} kg. Si no hay, pon discos a una barra en Z hasta sumar ${nk(kg)} kg contando la barra.</p></details>`;
   if(u==='ayuda')return `<details><summary>¿Cómo funciona la ayuda?</summary><p>En esta máquina el peso que eliges te <b>ayuda</b> a subir. Más kg = más fácil. Pon el pasador en ${nk(kg)} kg. Cuando vayas mejorando, irás bajando la ayuda.</p></details>`;
   return '';
 }
@@ -748,7 +878,7 @@ function guardarHist(id,arr){
   e.sets=arr.map(x=>x?{kg:x.kg,reps:x.reps,ok:!!x.ok,feel:x.feel}:null);
   if(l.length>8)l.splice(0,l.length-8);
 }
-function recomendar(id,r){
+function recomendarBase(id,r){
   const [u,ini,step]=PESO[id]||['corp'],R=parseReps(r);
   if(u==='corp')return{u,kg:null,txt:R.tiempo?`Aguanta ${R.min}${R.max>R.min?'-'+R.max:''} segundos con buena postura. Si te tiembla todo antes, para, descansa y sigue.`:'Hazlo lento y controlado. Si no llegas a las repeticiones, haz las que puedas con buena técnica.'};
   const prev=ultimaSesion(id),sets=prev?prev.sets.filter(x=>x&&x.ok):[];
@@ -762,6 +892,12 @@ function recomendar(id,r){
   if(top&&!duro)return{u,kg:Math.max(0,base+dir*step),txt:`El ${fecha} ${hizo}: completaste el máximo de repeticiones. Hoy subimos un poco. Si en la primera serie no llegas a ${R.min}, vuelve al peso anterior.`};
   if(bajos>=2||(duro>sets.length/2&&bajos))return{u,kg:Math.max(0,base-dir*step),txt:`El ${fecha} ${hizo} y te costó mucho. Hoy bajamos un poco para hacerlo con técnica perfecta.`};
   return{u,kg:base,txt:`El ${fecha} ${hizo}. Hoy repite el mismo peso e intenta llegar a ${R.max} repeticiones en todas las series. Cuando lo consigas, subimos.`};
+}
+function recomendar(id,r){
+  const x=recomendarBase(id,r);
+  if(esDescarga()&&x.kg){const st=(PESO[id]||[])[2]||2.5,k=Math.max(0,Math.round(x.kg*0.85/st)*st);
+    if(k!==x.kg)return Object.assign({},x,{kg:k,txt:`Semana de descarga: hoy usas un 15% menos para que el cuerpo se recupere (normalmente ${fmtCorto(x.u,x.kg)}). La próxima semana vuelves a tu peso.`})}
+  return x;
 }
 function sugerirSerie(u,step,prev,R){
   if(!prev||!prev.ok||!prev.feel||u==='corp')return null;
@@ -807,7 +943,7 @@ function hacerRevision(){
   else if(prev.tipo==='estancado'){
     const antes=calc().kcal;S.ajusteKcal-=150;const ahora=calc().kcal;tipo='ajuste';
     msg=ahora<antes?`Dos semanas sin bajar. Te bajo 150 kcal (ahora ${ahora.toLocaleString('es-ES')} kcal al día) y suma 2.000 pasos diarios.`:`Dos semanas sin bajar. Ya estás en el mínimo de calorías, así que no bajo más: suma 2.000 pasos al día y 10 minutos de cardio al final de cada sesión.`;
-  }else{tipo='estancado';msg=`Esta semana casi no bajaste. Pasa de vez en cuando (agua, sal, estrés). Revisa que llegues a la proteína y a los pasos. Si la próxima semana sigue igual, ajusto las calorías.`}
+  }else{const km=kcalMedia(7);tipo='estancado';msg=(km&&km>calc().kcal+100?`Según lo que anotaste, comes unas ${km.toLocaleString('es-ES')} kcal al día y tu meta es ${calc().kcal.toLocaleString('es-ES')}. Ajusta eso primero. `:'')+`Esta semana casi no bajaste. Pasa de vez en cuando (agua, sal, estrés). Revisa que llegues a la proteína y a los pasos. Si la próxima semana sigue igual, ajusto las calorías.`}
   S.revs.push({f:hoy(),kg,cin,tipo,msg});
   S.pesos=S.pesos.filter(p=>p.f!==hoy());S.pesos.push({f:hoy(),kg,cin});
   save();render();
@@ -833,43 +969,61 @@ function renderAvisos(){
     };
     return;
   }
+  const fa=faseActual();
+  if(S.faseVista===undefined){S.faseVista=fa;save()}
+  if(S.faseVista!==fa)h+=`<div class="card hero"><div class="eyebrow">Nueva fase</div><div class="big">¡Subes a ${FASES[fa].n.split(' · ')[1]}!</div><p>${FASES[fa].txt}</p><button class="btn light" id="faseOk">Ver mi nueva semana</button></div>`;
   if(tocaRevision())h+=`<div class="banner"><span><b>Toca tu revisión semanal.</b> Tarda 2 minutos.</span><button class="btn" data-ir="peso">Hacerla</button></div>`;
   const dias=S.ultimaCopia?(new Date(hoy())-new Date(S.ultimaCopia))/864e5:(new Date(hoy())-new Date(S.inicio))/864e5;
   if(dias>=14)h+=`<div class="banner"><span><b>Guarda una copia de tus datos.</b> Hace ${Math.round(dias)} días que no la guardas.</span><button class="btn ghost" data-ir="resumen">Guardar copia</button></div>`;
   $('avisos').innerHTML=h;
+  $('faseOk')&&($('faseOk').onclick=()=>{S.faseVista=fa;save();renderAvisos();ir('v-semanal')});
   $('avisos').querySelectorAll('[data-ir]').forEach(b=>b.onclick=()=>ir({peso:'v-progreso',resumen:'v-copia'}[b.dataset.ir]));
 }
 
-/* =================== PROTEÍNA Y AGUA =================== */
-const ALIM=[['2 huevos',12],['Pechuga de pollo (150 g)',46],['Lata de atún',25],['Carne de res magra (150 g)',39],['Pescado o tilapia (150 g)',33],
- ['Batido de proteína',24],['Yogur griego (200 g)',18],['Vaso de leche',8],['Queso (2 tajadas)',10],['Fríjoles o lentejas (1 taza)',15]];
-const VASOS=10;
+/* =================== PROTEÍNA, CALORÍAS Y AGUA =================== */
+// [nombre, g de proteína, kcal]
+const ALIM=[['2 huevos',12,140],['Pechuga de pollo (150 g)',46,250],['Lata de atún',25,120],['Carne de res magra (150 g)',39,250],['Pescado o tilapia (150 g)',33,180],
+ ['Batido de proteína',24,120],['Yogur griego (200 g)',18,130],['Vaso de leche',8,120],['Queso (2 tajadas)',10,140],['Fríjoles o lentejas (1 taza)',15,230]];
+const OTROS=[['Arroz (1 taza)',4,200],['Arepa mediana',4,200],['Papa mediana',3,130],['Plátano maduro (½)',1,120],['Pan (1 unidad)',3,90],['Avena (½ taza)',5,150],
+ ['Fruta o banano',1,100],['Aguacate (½)',1,120],['Empanada',6,250],['Pandebono o buñuelo',5,200],['Gaseosa o jugo (vaso)',0,140],['Cerveza',1,150]];
+const VASOS=10;let comidaTab='p';
 function hoyComida(){const t=hoy();return S.comida[t]=S.comida[t]||{p:[],agua:0}}
+const sumP=c=>c.p.reduce((x,y)=>x+(y[1]||0),0),sumK=c=>c.p.reduce((x,y)=>x+(y[2]||0),0);
 function marcarHabitos(){
-  const c=hoyComida(),t=hoy(),a=S.habitos[t]=S.habitos[t]||[],prot=c.p.reduce((x,y)=>x+y[1],0);
-  a[0]=prot>=calc().prot;a[3]=c.agua>=VASOS;
+  const c=hoyComida(),t=hoy(),a=S.habitos[t]=S.habitos[t]||[];
+  a[0]=sumP(c)>=calc().prot;a[3]=c.agua>=VASOS;
+}
+function kcalMedia(dias){ // media de kcal anotadas en los últimos días con algo anotado
+  const v=[];for(let i=1;i<=dias;i++){const d=new Date();d.setDate(d.getDate()-i);const c=S.comida[hoy(d)];if(c&&c.p.length>=3)v.push(sumK(c))}
+  return v.length>=3?Math.round(v.reduce((a,b)=>a+b,0)/v.length):null;
 }
 function renderContador(){
-  const c=hoyComida(),meta=calc().prot,prot=c.p.reduce((x,y)=>x+y[1],0),pct=Math.min(100,prot/meta*100);
-  const falta=meta-prot;
-  const RR=46,CC=2*Math.PI*RR;
+  const c=hoyComida(),C=calc(),meta=C.prot,prot=sumP(c),pct=Math.min(100,prot/meta*100);
+  const kc=sumK(c),kpct=Math.min(100,kc/C.kcal*100),pasa=kc>C.kcal;
+  const falta=meta-prot,RR=46,CC=2*Math.PI*RR,lista=comidaTab==='p'?ALIM:OTROS;
   $('contador').innerHTML=`<div class="card"><div class="protTop">
    <svg class="ring" viewBox="0 0 120 120" role="img" aria-label="Proteína: ${prot} de ${meta} gramos"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF3D6E"/></linearGradient></defs>
     <circle cx="60" cy="60" r="${RR}" fill="none" stroke="var(--bar)" stroke-width="11"/>
     <circle cx="60" cy="60" r="${RR}" fill="none" stroke="url(#rg)" stroke-width="11" stroke-linecap="round" stroke-dasharray="${CC.toFixed(1)}" stroke-dashoffset="${(CC*(1-pct/100)).toFixed(1)}" transform="rotate(-90 60 60)"/>
-    <text x="60" y="62" text-anchor="middle" class="rn">${prot}</text><text x="60" y="80" text-anchor="middle" class="rs">DE ${meta} G</text></svg>
-   <div><h3 style="margin:0">Proteína</h3><p class="note" style="margin-top:4px">${falta>0?`Te faltan <b>${falta} g</b>. ${falta>=70?'Eso es más o menos una pechuga de pollo y un batido.':falta>=40?'Eso es más o menos una pechuga de pollo.':falta>=20?'Eso es más o menos un batido o una lata de atún.':'Ya casi.'}`:'¡Llegaste a tu proteína de hoy!'}</p></div></div>
-   <div class="foods">${ALIM.map(([n,g],i)=>`<button data-al="${i}">+ ${n}<b>${g} g de proteína</b></button>`).join('')}</div>
+    <text x="60" y="62" text-anchor="middle" class="rn">${prot}</text><text x="60" y="80" text-anchor="middle" class="rs">DE ${meta} G PROT.</text></svg>
+   <div style="flex:1;min-width:0"><h3 style="margin:0">Calorías</h3>
+    <div class="kcalN"><b class="${pasa?'pasa':''}">${kc.toLocaleString('es-ES')}</b> / ${C.kcal.toLocaleString('es-ES')}</div>
+    <div class="track"><i style="width:${kpct}%;${pasa?'background:var(--warn)':''}"></i></div>
+    <p class="note" style="margin-top:6px">${pasa?`Te pasaste ${(kc-C.kcal).toLocaleString('es-ES')} kcal. Mañana compensa un poco, sin dejar de comer.`:falta>0?`Proteína: te faltan <b>${falta} g</b>${falta>=40?' (más o menos una pechuga)':''}.`:'¡Llegaste a tu proteína!'}</p></div></div>
+   <div class="seg" style="margin:14px 0 0"><button data-ct="p" aria-pressed="${comidaTab==='p'}">Proteínas</button><button data-ct="o" aria-pressed="${comidaTab==='o'}">Carbohidratos y otros</button></div>
+   <div class="foods">${lista.map(([n,g,k],i)=>`<button data-al="${i}">+ ${n}<b>${k} kcal${g?' · '+g+' g prot.':''}</b></button>`).join('')}</div>
    <details class="fold"><summary>${c.p.length?`Anotados hoy (${c.p.length})`:'Otro alimento'}</summary>
-   <div class="row"><label>Gramos de proteína<input id="alOtro" type="number" inputmode="numeric" min="1" max="150"></label><button class="btn ghost" id="alOtroOk">Añadir</button></div>
-   ${c.p.length?`<div class="loglist" style="margin-top:10px">${c.p.map((x,i)=>`<div><span>${esc(x[0])}</span><span>${x[1]} g <button data-del="${i}" aria-label="Quitar">✕</button></span></div>`).join('')}</div>`:''}</details></div>
+   <div class="row"><label>Calorías<input id="alK" type="number" inputmode="numeric" min="1" max="2500" placeholder="kcal"></label><label>Proteína (g)<input id="alOtro" type="number" inputmode="numeric" min="0" max="150" placeholder="0"></label><button class="btn ghost" id="alOtroOk">Añadir</button></div>
+   <p class="note" style="margin-top:6px">Las calorías vienen en la etiqueta del paquete. Si no sabes, apunta lo más parecido de la lista.</p>
+   ${c.p.length?`<div class="loglist" style="margin-top:10px">${c.p.map((x,i)=>`<div><span>${esc(x[0])}</span><span>${x[2]?x[2]+' kcal · ':''}${x[1]} g <button data-del="${i}" aria-label="Quitar">✕</button></span></div>`).join('')}</div>`:''}</details></div>
    <div class="card"><div class="row" style="justify-content:space-between;align-items:center"><h3 style="margin:0">Agua</h3><span class="note">${c.agua} de ${VASOS} vasos · ${f1(c.agua*0.25)} L</span></div>
    <div class="vasos">${Array.from({length:VASOS},(_,i)=>`<span class="${i<c.agua?'on':''}"></span>`).join('')}</div>
    <div class="row"><button class="btn" id="aguaMas" style="flex:1">+ 1 vaso</button><button class="btn ghost" id="aguaMenos" aria-label="Quitar un vaso">−</button></div></div>`;
   const upd=()=>{marcarHabitos();save();renderContador();renderHabitos()};
-  $('contador').querySelectorAll('[data-al]').forEach(b=>b.onclick=()=>{c.p.push(ALIM[+b.dataset.al]);upd()});
+  $('contador').querySelectorAll('[data-ct]').forEach(b=>b.onclick=()=>{comidaTab=b.dataset.ct;renderContador()});
+  $('contador').querySelectorAll('[data-al]').forEach(b=>b.onclick=()=>{c.p.push(lista[+b.dataset.al].slice());upd()});
   $('contador').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{c.p.splice(+b.dataset.del,1);upd()});
-  $('alOtroOk').onclick=()=>{const g=parseInt($('alOtro').value);if(!g||g<1||g>150){$('alOtro').focus();return}c.p.push(['Otro',g]);upd()};
+  $('alOtroOk').onclick=()=>{const k=parseInt($('alK').value)||0,g=parseInt($('alOtro').value)||0;if(k<1||k>2500){$('alK').focus();return}c.p.push(['Otro',Math.min(150,Math.max(0,g)),k]);upd()};
   $('aguaMas').onclick=()=>{c.agua=Math.min(20,c.agua+1);upd()};
   $('aguaMenos').onclick=()=>{c.agua=Math.max(0,c.agua-1);upd()};
 }
@@ -927,7 +1081,7 @@ function pasosDe(dia){
 }
 function sesion(){
   const k=hoy();
-  if(!S.ses[k]||S.ses[k].dia!==diaSel)S.ses[k]={dia:diaSel,paso:0,sets:{},hechos:{}};
+  if(!S.ses[k]||S.ses[k].dia!==diaSel||(S.ses[k].fase||1)!==faseActual())S.ses[k]={dia:diaSel,fase:faseActual(),paso:0,sets:{},hechos:{}};
   return S.ses[k];
 }
 function renderCoach(){
@@ -945,9 +1099,10 @@ function renderCoach(){
 
   if(st.tipo==='intro'){
     const sem=semanaN(),fin=P.final.map(x=>x[1].replace(/^Cardio (de quema|suave|principal)$/,'Cardio')).join(' + ');
-    h+=`<div class="eyebrow">${P.min?'Unos '+P.min+' minutos':'Día libre'}</div><div class="big">${P.t}</div><p>${P.foco}</p>
+    h+=`<div class="eyebrow">${FASES[faseActual()].n}${P.min?' · '+P.min+' min':''}</div><div class="big">${P.t}</div><p>${P.foco}</p>
       <div class="chips" style="margin-top:14px">${P.inicio.length?'<span class="chip">1 · Calentar</span>':''}${P.ex.length?`<span class="chip">2 · ${P.ex.length} ejercicios</span>`:''}<span class="chip">${P.ex.length?'3 · ':''}${esc(fin)}</span></div>
-      ${sem<=2&&P.ex.length?`<p class="heroNote"><b>Semana ${sem}: estás aprendiendo.</b> En cada ejercicio te digo qué peso usar. Tú solo dime cómo se sintió.</p>`:''}
+      ${esDescarga()&&P.ex.length?`<p class="heroNote"><b>Semana de descarga.</b> Una serie menos y un 15% menos de peso para recuperarte. Es parte del plan.</p>`:''}
+      ${faseActual()===1&&sem<=2&&P.ex.length?`<p class="heroNote"><b>Semana ${sem}: estás aprendiendo.</b> En cada ejercicio te digo qué peso usar. Tú solo dime cómo se sintió.</p>`:''}
       <button class="btn light" id="nxt">${P.ex.length||P.inicio.length?'Empezar':'Ver el plan de hoy'}</button>
       ${P.ex.length?'<p class="heroNote" style="font-size:.8rem;opacity:.85">Lleva toalla (obligatoria en Smart Fit) y agua.</p>':''}`;
   }
@@ -1049,9 +1204,16 @@ $('timerStop').onclick=()=>{clearInterval(tInt);tRest=0;$('timer').hidden=true};
 
 /* =================== OTRAS VISTAS =================== */
 function renderSemana(){
-  $('tablaSemana').innerHTML=PLAN.map(p=>`<details class="card fold"><summary><span class="dnum">${p.d}</span><span class="dtxt"><b>${p.t}</b><small>${p.min?p.min+' min · ':''}${p.foco}</small></span></summary>
+  const fa=faseActual();
+  $('tablaSemana').innerHTML=`<div class="card"><h3>Tu fase</h3>${[1,2,3].map(i=>`<div class="faseRow ${i===fa?'on':''}"><b>${FASES[i].n}${i===fa?' · ahora':''}</b><small>${FASES[i].sem}</small><p class="note" style="margin-top:2px">${FASES[i].txt}</p></div>`).join('')}
+   <label style="margin-top:12px">Cambiar de fase<select id="faseSel"><option value="0">Automática, según tus semanas</option><option value="1">Fase 1 · Base</option><option value="2">Fase 2 · Intermedia</option><option value="3">Fase 3 · Avanzada</option></select></label>
+   <p class="note" style="margin-top:6px">Déjala en automática. Cámbiala a mano solo si un instructor te lo recomienda o si ya entrenabas antes.</p></div>
+   ${esDescarga()?'<div class="banner"><span><b>Esta semana es de descarga:</b> una serie menos y un 15% menos de peso.</span></div>':''}
+   <div class="eyebrow" style="margin:6px 0 8px">Días de la ${FASES[fa].n.split(' · ')[0].toLowerCase()}</div>`+PLAN.map(p=>`<details class="card fold"><summary><span class="dnum">${p.d}</span><span class="dtxt"><b>${p.t}</b><small>${p.min?p.min+' min · ':''}${p.foco}</small></span></summary>
    ${p.ex.length?`<ol class="pasos">${p.ex.map(x=>`<li>${EX[x[0]].n} <span class="note">· ${seriesDe(x[1])}×${x[2]}</span></li>`).join('')}</ol>`:`<p class="note">${esc(p.final.map(x=>x[2]).join(' '))}</p>`}</details>`).join('');
-  const usados=new Set(PLAN.flatMap(p=>p.ex.map(x=>x[0])));
+  $('faseSel').value=String(S.faseManual||0);
+  $('faseSel').onchange=e=>{const v=+e.target.value;S.faseManual=v||null;S.faseDesde=semanaN();S.faseVista=faseActual();save();render()};
+  const usados=new Set(Object.values(PLANES).flatMap(P=>P.flatMap(p=>p.ex.map(x=>x[0]))));
   const fila=(id,n,z,cuerpo)=>`<details class="card fold"><summary><span class="dtxt"><b>${n}</b><small>${z}</small></span></summary>${dibujo(id,n)}${cuerpo}</details>`;
   $('listaMaq').innerHTML=`<div class="eyebrow" style="margin:4px 0 8px">Pesas</div>`+[...usados].map(id=>{const E=EX[id];return fila(id,E.n,E.zona,
    `<p>${E.maq}</p><ol class="pasos" style="margin-top:8px">${E.pasos.map(p=>`<li>${p}</li>`).join('')}</ol><p class="note" style="margin-top:8px">Si no está: ${E.alt}. <a class="video" href="${yt(E.n)}" target="_blank" rel="noopener">Ver vídeo ↗</a></p>`)}).join('')+
@@ -1059,6 +1221,7 @@ function renderSemana(){
 }
 
 function render(){
+  PLAN=PLANES[faseActual()];
   const c=calc(),p=S.perfil;
   const perdido=p.peso-c.w;
   $('tiles').innerHTML=`<div class="tile main"><span>Peso</span><b>${f1(c.w)}</b><small>${perdido>0?'−'+f1(perdido)+' kg ya':'kg'}</small></div>

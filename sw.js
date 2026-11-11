@@ -1,6 +1,6 @@
 // Forja: guarda la app para que abra aunque no haya señal en el gym.
 // Primero intenta internet (para recibir mejoras); si no hay, usa la copia guardada.
-const CACHE = 'forja-v1';
+const CACHE = 'forja-v2';
 const ARCHIVOS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ARCHIVOS)));
